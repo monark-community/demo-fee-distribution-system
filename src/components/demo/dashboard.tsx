@@ -64,8 +64,8 @@ export function Dashboard() {
         <p className="mt-2 text-xs text-muted-foreground">{d.stats.usdNote}</p>
       </section>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <section aria-labelledby="splits-title">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <section aria-labelledby="splits-title" className="min-w-0">
           <h2 id="splits-title" className="sr-only">
             {d.title}
           </h2>
@@ -91,7 +91,7 @@ export function Dashboard() {
           )}
         </section>
 
-        <section aria-labelledby="activity-title" className="lg:border-l lg:pl-8">
+        <section aria-labelledby="activity-title" className="min-w-0 lg:border-l lg:pl-8">
           <h2 id="activity-title" className="text-lg font-bold">
             {d.activity}
           </h2>

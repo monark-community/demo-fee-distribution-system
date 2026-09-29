@@ -298,7 +298,7 @@ export function Composer() {
         </div>
       </fieldset>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
         <form
           noValidate
           className="flex flex-col gap-8"

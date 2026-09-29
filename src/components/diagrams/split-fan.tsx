@@ -44,7 +44,7 @@ export function SplitFan({
   return (
     <div
       className={cn(
-        "grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-0 gap-y-3 sm:grid-cols-[minmax(0,10.5rem)_minmax(2.5rem,1fr)_minmax(0,1.6fr)]",
+        "grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-0 gap-y-3 sm:grid-cols-[minmax(0,9.5rem)_minmax(2.5rem,0.6fr)_minmax(0,1.9fr)]",
         className
       )}
     >

@@ -51,7 +51,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
           aria-hidden="true"
           className="pointer-events-none absolute -top-24 -right-40 w-[34rem] max-w-none opacity-[0.10] select-none sm:-right-24 lg:-top-16 lg:-right-20 lg:w-[46rem] dark:opacity-[0.16]"
         />
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pt-12 pb-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:pt-20 lg:pb-24">
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pt-12 pb-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.12fr)] lg:items-center lg:gap-12 lg:pt-20 lg:pb-24">
           <div>
             <p className="eyebrow text-primary-ink">{h.eyebrow}</p>
             <h1

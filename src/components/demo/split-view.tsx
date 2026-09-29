@@ -19,9 +19,9 @@ import { useTx } from "@/lib/demo/chain"
 import { applyApproval, applyDistribution, applyPayment, approvalsMet, needsApproval, requestApproval, setFrozen } from "@/lib/demo/ops"
 import { youSigner } from "@/lib/demo/seed"
 import { getDemo, updateSplit, useDemo } from "@/lib/demo/store"
-import { NETWORK_NAME } from "@/lib/demo/tokens"
+import { NETWORK_NAME, TOKENS } from "@/lib/demo/tokens"
 import type { AllocationLine, Signer, Split } from "@/lib/demo/types"
-import { formatDate, formatPercent, formatToken, formatUsd } from "@/lib/format"
+import { formatDate, formatPercent, formatToken, formatUnits, formatUsd } from "@/lib/format"
 import { usdValue } from "@/lib/demo/tokens"
 
 import { ActivityLog } from "./activity-log"
@@ -110,7 +110,14 @@ function SplitDetail({ split }: { split: Split }) {
           {line.dust ? <span>· {s.dustTag}</span> : null}
         </span>
       ),
-      amount: liveLines ? formatToken(line.amount, split.token, locale) : <span className="text-muted-foreground">—</span>,
+      amount: liveLines ? (
+        <span>
+          {formatUnits(line.amount, TOKENS[split.token].decimals, locale)}
+          <span className="hidden sm:inline">{" "}{split.token}</span>
+        </span>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      ),
     }
   })
 
@@ -252,18 +259,18 @@ function SplitDetail({ split }: { split: Split }) {
       ) : null}
 
       {/* Stats */}
-      <dl className="grid grid-cols-3 gap-3">
+      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
           { label: s.stats.received, value: split.received },
           { label: s.stats.distributed, value: split.distributed },
           { label: s.stats.waiting, value: split.balance, accent: balance > 0n },
         ].map((x) => (
-          <div key={x.label} className="rounded-2xl border bg-card p-3 sm:p-4">
+          <div key={x.label} className="flex flex-wrap items-baseline justify-between gap-x-3 rounded-2xl border bg-card p-3 sm:block sm:p-4">
             <dt className="text-xs font-semibold text-muted-foreground">{x.label}</dt>
             <dd className={`mt-1 text-base font-extrabold tabular-nums sm:text-xl ${x.accent ? "text-primary-ink" : ""}`}>
               {formatToken(x.value, split.token, locale)}
             </dd>
-            <dd className="text-xs text-muted-foreground tabular-nums">{formatUsd(usdValue(x.value, split.token), locale)}</dd>
+            <dd className="basis-full text-right text-xs text-muted-foreground tabular-nums sm:text-left">{formatUsd(usdValue(x.value, split.token), locale)}</dd>
           </div>
         ))}
       </dl>
@@ -287,7 +294,7 @@ function SplitDetail({ split }: { split: Split }) {
             paidLabel={s.paidTag}
             source={
               <div>
-                <p className="eyebrow text-muted-foreground">{frozen && balance > 0n ? s.flowHeld : s.stats.waiting}</p>
+                <p className="eyebrow text-muted-foreground">{paidLines ? s.stats.distributed : frozen && balance > 0n ? s.flowHeld : s.stats.waiting}</p>
                 <p className="mt-1 text-xl font-extrabold tabular-nums">
                   {formatToken(paidLines ? paidLines.reduce((a, l) => a + BigInt(l.amount), 0n) : balance, split.token, locale)}
                 </p>

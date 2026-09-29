@@ -70,7 +70,7 @@ export function SharesDialog({ split, disabled }: { split: Split; disabled?: boo
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline" disabled={disabled}>
+        <Button variant="outline" size="lg" disabled={disabled}>
           <PencilLineIcon aria-hidden="true" />
           {app.split.actions.editShares}
         </Button>

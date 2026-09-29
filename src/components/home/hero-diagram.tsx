@@ -65,7 +65,7 @@ export function HeroDiagram({
       timers.push(setTimeout(() => setStage("paid"), 3100))
       timers.push(setTimeout(cycle, 6600))
     }
-    timers.push(setTimeout(cycle, 900))
+    timers.push(setTimeout(cycle, 2600))
     return () => {
       cancelled = true
       cancelAnimationFrame(raf)

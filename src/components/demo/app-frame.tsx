@@ -25,8 +25,10 @@ export function AppFrame({ children }: { children: ReactNode }) {
       <div className="border-b bg-secondary/40">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5 sm:px-6">
           <NetworkBadge name={NETWORK_NAME} variant="outline" icon={<span className="block size-full rounded-full bg-success" />} />
-          <Disclaimer text={disclaimer} className="min-w-0 flex-1" />
-          <DemoControls />
+          <Disclaimer text={disclaimer} className="order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1" />
+          <div className="ml-auto sm:ml-0">
+            <DemoControls />
+          </div>
         </div>
       </div>
       {!storageOk ? (
