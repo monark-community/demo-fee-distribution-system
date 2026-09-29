@@ -23,7 +23,7 @@ const fr: Dictionary = {
   common: {
     product: "Splitflow",
     byMonark: "par Monark",
-    homeLabel: "Splitflow par Monark, accueil",
+    homeLabel: "Splitflow, par Monark : accueil",
     skip: "Aller au contenu",
     nav: {
       overview: "Aperçu",
@@ -38,12 +38,14 @@ const fr: Dictionary = {
     closeMenu: "Fermer le menu",
     theme: { toggle: "Changer de thème", light: "Clair", dark: "Sombre" },
     language: { label: "Langue", en: "English", fr: "Français", short: { en: "EN", fr: "FR" } },
+    demoChip: "Démo",
     demoBadge: "Démo · données simulées",
     disclaimer: "Démo sur testnet · ceci n'est pas un conseil financier · aucun fonds réel",
     newTab: "(s'ouvre dans un nouvel onglet)",
     footer: {
       product: "Splitflow répartit chaque paiement entre les personnes qui l'ont mérité, avec un reçu vérifiable par tous.",
       productNav: "Splitflow",
+      builtBy: "Splitflow est conçu par Monark",
       tagline: "Favoriser la collaboration au sein de la communauté Web3",
       monarkHome: "Accueil de Monark",
       projectPage: "Page du projet sur monark.io",

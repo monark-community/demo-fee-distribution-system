@@ -70,7 +70,7 @@ src/
     sitemap.ts  robots.ts  icon.svg  globals.css (Monark 2026 tokens)
   components/
     ui/                     shadcn/ui + @monark/ui registry (wallet, connect-wallet, token-amount, network-badge, tx-status)
-    site/                   Monark standard header, footer, pairing, switches
+    site/                   Monark standard header, footer, brand, Demo chip, switches
     home/  diagrams/        hero fan, share bars, lifecycle diagram
     demo/                   app screens, wallet prompt, tx feedback, dialogs
   i18n/                     locale config, typed EN/FR dictionaries

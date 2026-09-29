@@ -80,9 +80,9 @@ All routes live under `/{locale}` (`en`, `fr`). `/` and any locale-less path red
 | `/{locale}/pricing` | **Internal strategy review only.** Never linked, excluded from the sitemap, `noindex, nofollow`. | Price card "Free, part of Monark" · What you pay (gas only, 0% protocol fee) · Partner deployments · Reasoning |
 | 404 | Friendly not-found with the vertical Monark logo and links home and to the demo. | |
 
-**Header** (standard Monark shell): "Splitflow by Monark" pairing → home · links: *Overview*, *How it works*, *Demo* (pill highlight on the active one) · EN/FR switch · theme toggle · primary pill *Launch demo*. Inside `/app` the primary action becomes the `connect-wallet` component and a "Demo · simulated data" badge appears. Mobile: pairing + menu button opening a full-height sheet.
+**Header** (standard Monark shell, brand guidelines §10): butterfly mark + "Splitflow" brand → home (no "by Monark" in the header) · links left-aligned after the brand: *Overview*, *How it works*, *Demo* (active one in foreground) · right side: Demo chip · EN/FR switch · theme toggle · primary *Launch demo*. Inside `/app` the primary action becomes the `connect-wallet` component. Below `lg`: brand + menu button opening a full-height sheet with the links, Demo chip, EN/FR, theme toggle and action.
 
-**Footer** (three bands): product line + links (Overview, How it works, Demo, Credits) · Monark logo + tagline, links to the project page on monark.io and the GitHub repo, social icons · "© {year} Monark · Open source", "Demo · simulated data", photo credits link.
+**Footer** (three bands): product line + links (Overview, How it works, Demo, Credits) · "Splitflow is built by Monark", Monark logo + tagline, links to the project page on monark.io and the GitHub repo, social icons · "© {year} Monark · Open source", "Demo · simulated data", photo credits link.
 
 ## 5. Feature highlights
 
@@ -182,7 +182,7 @@ Colour, type, logo, header and footer are fixed by the guidelines: cream / espre
 | `public/images/students.jpg` (Unsplash, Vitaly Gariev) | Student association use case | Home "who it's for" |
 | `public/images/team.jpg` (Unsplash, Brooke Cagle) | Hackathon / small team use case | Home "who it's for" |
 | `public/images/market.jpg` (Unsplash, Kyle Nieber) | Local co-op use case | Home "who it's for" |
-| `public/brand/*` Monark logos (standalone, horizontal light/dark, vertical) | Header pairing, footer, 404, favicon | Shell |
+| `public/brand/*` Monark logos (standalone, horizontal light/dark, vertical) | Header brand, footer, 404, favicon | Shell |
 | `public/brand/monark-mesh.svg` | Home hero decoration | Home hero only |
 | `public/brand/socials/*.svg` | Footer social icons | Footer |
 | Open Graph image | Generated with `next/og` per locale | Metadata |

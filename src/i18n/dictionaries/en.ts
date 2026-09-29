@@ -22,7 +22,7 @@ const en = {
   common: {
     product: "Splitflow",
     byMonark: "by Monark",
-    homeLabel: "Splitflow by Monark, home",
+    homeLabel: "Splitflow, by Monark: home",
     skip: "Skip to content",
     nav: {
       overview: "Overview",
@@ -37,12 +37,14 @@ const en = {
     closeMenu: "Close menu",
     theme: { toggle: "Switch colour theme", light: "Light", dark: "Dark" },
     language: { label: "Language", en: "English", fr: "Français", short: { en: "EN", fr: "FR" } },
+    demoChip: "Demo",
     demoBadge: "Demo · simulated data",
     disclaimer: "Testnet demo · not financial advice · no real funds",
     newTab: "(opens in a new tab)",
     footer: {
       product: "Splitflow splits every payment among the people who earned it, with a receipt anyone can check.",
       productNav: "Splitflow",
+      builtBy: "Splitflow is built by Monark",
       tagline: "Fostering Collaboration within the Web3 Community",
       monarkHome: "Monark home page",
       projectPage: "Project page on monark.io",
