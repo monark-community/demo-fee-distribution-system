@@ -19,7 +19,6 @@ import { formatToken } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 import { TxFeedback } from "./tx-feedback"
 
 const DEFAULT_AMOUNT: Record<Split["token"], string> = { tUSDC: "1200", tDAI: "860", tETH: "0.75" }
@@ -35,7 +34,7 @@ export function SimulateDialog({
   onSend: (amount: string, payer: { name: string; address: string }, hash: string) => void
   disabled?: boolean
 }) {
-  const { app, locale, disclaimer } = useAppCopy()
+  const { app, locale } = useAppCopy()
   const s = app.split.simulate
   const uid = useId()
   const [open, setOpen] = useState(false)
@@ -151,7 +150,6 @@ export function SimulateDialog({
         </div>
 
         <TxFeedback state={tx.state} onRetry={() => void send()} onDismiss={tx.reset} />
-        <Disclaimer text={disclaimer} />
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button variant="outline" size="lg" onClick={() => setOpen(false)} disabled={tx.busy}>

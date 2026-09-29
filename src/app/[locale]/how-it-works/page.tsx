@@ -1,4 +1,4 @@
-import { ArrowRightIcon, ShieldCheckIcon, SnowflakeIcon } from "lucide-react"
+import { ArrowRightIcon, PlusIcon, ShieldCheckIcon, SnowflakeIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -130,8 +130,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
   return (
     <>
       <section className="mx-auto w-full max-w-6xl px-4 pt-12 pb-10 sm:px-6 lg:pt-16" aria-labelledby="how-title">
-        <p className="eyebrow text-primary-ink">{h.eyebrow}</p>
-        <h1 id="how-title" className="mt-3 text-4xl font-extrabold tracking-display sm:text-5xl">
+        <h1 id="how-title" className="text-4xl font-extrabold tracking-display sm:text-5xl">
           {h.title}
         </h1>
         <p className="mt-5 max-w-[68ch] text-lg text-muted-foreground">{h.intro}</p>
@@ -223,32 +222,38 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
           {h.dev.title}
         </h2>
         <p className="mt-3 max-w-[68ch] text-muted-foreground">{h.dev.body}</p>
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <div className="min-w-0">
-            <h3 className="text-sm font-bold">{h.dev.interfaceTitle}</h3>
-            <pre className="mt-3 overflow-x-auto rounded-2xl border bg-card p-4 font-mono text-xs leading-relaxed">
-              <code>{INTERFACE}</code>
-            </pre>
+        <details className="group mt-6">
+          <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-bold text-primary-ink [&::-webkit-details-marker]:hidden">
+            <PlusIcon className="size-4 transition-transform duration-200 group-open:rotate-45" aria-hidden="true" />
+            {h.dev.show}
+          </summary>
+          <div className="mt-4 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold">{h.dev.interfaceTitle}</h3>
+              <pre className="mt-3 overflow-x-auto rounded-2xl border bg-card p-4 font-mono text-xs leading-relaxed">
+                <code>{INTERFACE}</code>
+              </pre>
+            </div>
+            <div>
+              <h3 className="text-sm font-bold">{h.dev.layerTitle}</h3>
+              <ul className="mt-3 flex flex-col gap-2 text-sm">
+                {h.dev.layerItems.map((item) => {
+                  const [file, ...rest] = item.split(":")
+                  return (
+                    <li key={item} className="rounded-xl border bg-card p-3">
+                      <code className="font-mono text-xs font-bold text-primary-ink">src/lib/demo/{file?.trim()}</code>
+                      <span className="mt-1 block text-muted-foreground">{rest.join(":").trim()}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h3 className="text-sm font-bold">{h.dev.layerTitle}</h3>
-            <ul className="mt-3 flex flex-col gap-2 text-sm">
-              {h.dev.layerItems.map((item) => {
-                const [file, ...rest] = item.split(":")
-                return (
-                  <li key={item} className="rounded-xl border bg-card p-3">
-                    <code className="font-mono text-xs font-bold text-primary-ink">src/lib/demo/{file}</code>
-                    <span className="mt-1 block text-muted-foreground">{rest.join(":").trim()}</span>
-                  </li>
-                )
-              })}
-            </ul>
-            <a href={REPO_URL} className="mt-4 inline-flex min-h-11 items-center gap-1.5 font-bold text-primary-ink underline underline-offset-4">
-              {h.dev.repo}
-              <ArrowRightIcon className="size-4" aria-hidden="true" />
-            </a>
-          </div>
-        </div>
+        </details>
+        <a href={REPO_URL} className="mt-2 inline-flex min-h-11 items-center gap-1.5 font-bold text-primary-ink underline underline-offset-4">
+          {h.dev.repo}
+          <ArrowRightIcon className="size-4" aria-hidden="true" />
+        </a>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6" aria-labelledby="how-cta">
@@ -257,7 +262,6 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
             <h2 id="how-cta" className="text-2xl font-bold tracking-display sm:text-3xl">
               {h.cta.title}
             </h2>
-            <p className="mt-2 text-muted-foreground">{h.cta.body}</p>
           </div>
           <Button asChild size="lg">
             <Link href={href(locale, "/app")}>

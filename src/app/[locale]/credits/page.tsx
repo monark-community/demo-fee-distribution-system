@@ -53,7 +53,6 @@ export default async function CreditsPage({ params }: PageProps<"/[locale]/credi
                     {p.profile.replace("https://", "")}
                   </a>
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">{c.usedOn}</p>
               </div>
             </li>
           ))}

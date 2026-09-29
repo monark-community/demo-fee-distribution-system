@@ -1,13 +1,13 @@
 "use client"
 
-import { ArrowLeftIcon, CheckCircle2Icon, PlusIcon, RocketIcon, ShuffleIcon, Trash2Icon } from "lucide-react"
+import { ArrowRightIcon, CheckCircle2Icon, PlusIcon, RocketIcon, ShuffleIcon, Trash2Icon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useId, useMemo, useState } from "react"
-import { toast } from "sonner"
 
 import { ShareBar, ShareDot } from "@/components/diagrams/share-bar"
 import { Button } from "@/components/ui/button"
+import { InfoTip } from "@/components/ui/info-tip"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -24,7 +24,6 @@ import { formatNumber, formatToken } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 import { TxFeedback } from "./tx-feedback"
 
 interface DraftRecipient {
@@ -61,7 +60,7 @@ function bpsToPercentString(bps: number): string {
 }
 
 export function Composer() {
-  const { app, seed, locale, disclaimer } = useAppCopy()
+  const { app, seed, locale } = useAppCopy()
   const c = app.composer
   const demo = useDemo()
   const router = useRouter()
@@ -249,8 +248,8 @@ export function Composer() {
           pending: null,
           log: [{ id: `${id}-created`, kind: "created", at: now, actor: you.name, actorAddress: you.address, hash }],
         }
+        // The new split's page is the confirmation: no toast.
         update((s) => ({ ...s, splits: [split, ...s.splits] }))
-        toast.success(c.deployed)
         router.push(href(locale, `/app/split/${id}`))
       }
     )
@@ -269,14 +268,7 @@ export function Composer() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <Link href={href(locale, "/app")} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
-          <ArrowLeftIcon className="size-4" aria-hidden="true" />
-          {c.back}
-        </Link>
-        <h1 className="mt-2 text-4xl font-extrabold tracking-display">{c.title}</h1>
-        <p className="mt-2 max-w-xl text-muted-foreground">{c.intro}</p>
-      </div>
+      <h1 className="text-4xl font-extrabold tracking-display">{c.title}</h1>
 
       <fieldset>
         <legend className="text-sm font-bold">{c.templates.title}</legend>
@@ -328,16 +320,24 @@ export function Composer() {
                   options={TOKEN_LIST.map((s) => ({ value: s, label: s }))}
                   onChange={(v) => patch({ token: v as TokenSymbol })}
                 />
-                <p className="mt-2 text-xs text-muted-foreground">{c.tokenHint}</p>
               </fieldset>
             </div>
           </section>
 
           {/* Rule + recipients */}
           <section className="rounded-3xl border bg-card p-5 sm:p-6" aria-labelledby={`${uid}-rule`}>
-            <h2 id={`${uid}-rule`} className="text-lg font-bold">
-              {c.ruleTitle}
-            </h2>
+            <div className="flex items-center gap-1">
+              <h2 id={`${uid}-rule`} className="text-lg font-bold">
+                {c.ruleTitle}
+              </h2>
+              <InfoTip label={c.ruleInfoLabel}>
+                <p>{c.ruleInfo}</p>
+                <Link href={href(locale, "/how-it-works")} className="mt-2 inline-flex items-center gap-1 font-bold text-primary-ink underline underline-offset-4">
+                  {c.ruleInfoLink}
+                  <ArrowRightIcon className="size-3.5" aria-hidden="true" />
+                </Link>
+              </InfoTip>
+            </div>
             <fieldset className="mt-4">
               <legend className="sr-only">{c.ruleTitle}</legend>
               <div className="grid gap-2 sm:grid-cols-2">
@@ -345,7 +345,7 @@ export function Composer() {
                   <label
                     key={rule}
                     className={cn(
-                      "flex cursor-pointer flex-col gap-1 rounded-2xl border p-4 transition-colors duration-150 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
+                      "flex cursor-pointer items-center rounded-2xl border p-4 transition-colors duration-150 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
                       draft.rule === rule ? "border-primary bg-secondary/60" : "hover:bg-muted/60"
                     )}
                   >
@@ -366,19 +366,15 @@ export function Composer() {
                       />
                       {c.rules[rule]}
                     </span>
-                    <span className="pl-6 text-xs text-muted-foreground">{rule === "fixed" ? c.rules.fixedHint : c.rules.pointsHint}</span>
                   </label>
                 ))}
               </div>
             </fieldset>
 
-            <div className="mt-6 flex items-start justify-between gap-4 rounded-2xl border p-4">
-              <div>
-                <Label htmlFor={`${uid}-cover`} className="text-sm font-bold">
-                  {c.cover}
-                </Label>
-                <p className="mt-1 text-xs text-muted-foreground">{c.coverHint}</p>
-              </div>
+            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border p-4">
+              <Label htmlFor={`${uid}-cover`} className="text-sm font-bold">
+                {c.cover}
+              </Label>
               <Switch id={`${uid}-cover`} checked={draft.coverOn} onCheckedChange={(v) => patch({ coverOn: v })} />
             </div>
             {draft.coverOn ? (
@@ -500,29 +496,29 @@ export function Composer() {
             </h2>
             <div className="mt-4 flex flex-col divide-y rounded-2xl border">
               <div className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <Label htmlFor={`${uid}-appr`} className="text-sm font-bold">
-                      {c.approvals}
-                    </Label>
-                    <p className="mt-1 text-xs text-muted-foreground">{c.approvalsHint}</p>
-                  </div>
+                <div className="flex items-center justify-between gap-4">
+                  <Label htmlFor={`${uid}-appr`} className="text-sm font-bold">
+                    {c.approvals}
+                  </Label>
                   <Switch id={`${uid}-appr`} checked={draft.approvalsOn} onCheckedChange={(v) => patch({ approvalsOn: v })} />
                 </div>
                 {draft.approvalsOn ? (
                   <div className="mt-4 max-w-xs">
+                    <p className="mb-3 text-xs text-muted-foreground">{c.approvalsHint}</p>
                     <Field id={`${uid}-threshold`} label={`${c.threshold} (${draft.token})`} error={err(errors.threshold)}>
                       <Input id={`${uid}-threshold`} inputMode="decimal" value={draft.threshold} onChange={(e) => patch({ threshold: e.target.value })} aria-invalid={!!err(errors.threshold)} />
                     </Field>
                   </div>
                 ) : null}
               </div>
-              <div className="flex items-start justify-between gap-4 p-4">
-                <div>
+              <div className="flex items-center justify-between gap-4 p-4">
+                <div className="flex items-center gap-1">
                   <Label htmlFor={`${uid}-auto`} className="text-sm font-bold">
                     {c.auto}
                   </Label>
-                  <p className="mt-1 text-xs text-muted-foreground">{c.autoHint}</p>
+                  <InfoTip label={c.autoInfoLabel} className="-my-2">
+                    {c.autoInfo}
+                  </InfoTip>
                 </div>
                 <Switch id={`${uid}-auto`} checked={draft.auto} onCheckedChange={(v) => patch({ auto: v })} />
               </div>
@@ -563,20 +559,18 @@ export function Composer() {
                 })}
               </ul>
             )}
-          </div>
-
-          <div className="flex flex-col gap-3 rounded-3xl border bg-card p-5 sm:p-6">
-            <Button type="submit" form={`${uid}-form`} size="lg" disabled={tx.busy}>
-              <RocketIcon aria-hidden="true" />
-              {tx.busy ? c.deploying : c.deploy}
-            </Button>
-            {showErrors && !valid ? (
-              <p role="alert" className="text-sm text-destructive">
-                {c.errors.summary}
-              </p>
-            ) : null}
-            <TxFeedback state={tx.state} pendingLabel={c.deploying} onRetry={() => void deploy()} onDismiss={tx.reset} />
-            <Disclaimer text={disclaimer} />
+            <div className="mt-5 flex flex-col gap-3 border-t pt-5">
+              <Button type="submit" form={`${uid}-form`} size="lg" disabled={tx.busy}>
+                <RocketIcon aria-hidden="true" />
+                {tx.busy ? c.deploying : c.deploy}
+              </Button>
+              {showErrors && !valid ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {c.errors.summary}
+                </p>
+              ) : null}
+              <TxFeedback state={tx.state} pendingLabel={c.deploying} onRetry={() => void deploy()} onDismiss={tx.reset} />
+            </div>
           </div>
         </aside>
       </div>
