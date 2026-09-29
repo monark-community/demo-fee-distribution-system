@@ -239,6 +239,7 @@ const fr: Dictionary = {
 
   app: {
     loading: "Chargement de votre démo…",
+    close: "Fermer",
     storageError: "Votre navigateur bloque le stockage local : la démo oubliera vos changements quand vous quitterez la page.",
     gate: {
       title: "Connectez un portefeuille de démo pour ouvrir vos partages",

@@ -48,6 +48,7 @@ export function SiteHeader({ locale, dict }: { locale: Locale; dict: Dictionary 
             wallet={wallet}
             labels={{
               open: c.menu,
+              close: c.closeMenu,
               title: c.menuTitle,
               description: c.nav.label,
               launch: c.launchDemo,

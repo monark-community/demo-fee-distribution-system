@@ -66,6 +66,7 @@ export function HeaderAction({
           title: wallet.signIn,
           rows: [{ label: wallet.signInRow, value: wallet.signInValue }],
           movesValue: false,
+          noFee: true,
         })
       }
       onDisconnect={disconnectWallet}

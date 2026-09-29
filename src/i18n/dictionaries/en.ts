@@ -238,6 +238,7 @@ const en = {
 
   app: {
     loading: "Loading your demo…",
+    close: "Close",
     storageError: "Your browser blocked local storage, so the demo will forget changes when you leave the page.",
     gate: {
       title: "Connect a demo wallet to open your splits",

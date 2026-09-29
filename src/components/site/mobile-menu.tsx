@@ -25,6 +25,7 @@ export function MobileMenu({
   wallet: WalletLabels
   labels: {
     open: string
+    close: string
     title: string
     description: string
     launch: string
@@ -42,7 +43,7 @@ export function MobileMenu({
           <MenuIcon className="size-5" aria-hidden="true" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full max-w-sm gap-0 p-0">
+      <SheetContent side="right" closeLabel={labels.close} className="w-full max-w-sm gap-0 p-0">
         <SheetHeader className="border-b px-5 py-4">
           <SheetTitle className="text-base font-extrabold">{labels.title}</SheetTitle>
           <SheetDescription className="sr-only">{labels.description}</SheetDescription>
