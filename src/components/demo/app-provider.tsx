@@ -38,7 +38,14 @@ export function AppProvider({ value, children }: { value: AppCopy; children: Rea
       <WalletPrompt />
       <Toaster
         theme={resolvedTheme === "dark" ? "dark" : "light"}
-        position="bottom-center"
+        // Top-right, just under the sticky 64px header : the pages keep that
+        // corner clear (titles are left-aligned), whereas bottom-center sat on
+        // top of the split fan and its last recipient rows while a payment
+        // was being distributed. On phones sonner goes full width, so it
+        // drops below the header there too.
+        position="top-right"
+        offset={{ top: 80, right: 24 }}
+        mobileOffset={{ top: 72, left: 16, right: 16 }}
         toastOptions={{
           classNames: {
             toast: "!rounded-2xl !border !border-border !bg-popover !text-popover-foreground !font-sans !shadow-md",
