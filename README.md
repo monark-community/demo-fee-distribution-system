@@ -41,7 +41,7 @@ No environment variables are needed. `NEXT_PUBLIC_SITE_URL` optionally overrides
 
 ### Screenshots
 
-With a production server running (`pnpm build && pnpm start`), `pnpm screenshots` drives every page and key flow with Playwright at 390 and 1440 px, light and dark, in English (plus French checks) and writes PNGs to `docs/screenshots/`. Set `BASE_URL` if the server isn't on port 3000, and `ONLY=en-390-light` to run one variant.
+With a production server running (`pnpm build && pnpm start -p 3133`), `pnpm screenshots` drives every page and key flow with Playwright at 390 and 1440 px, light and dark, in English (plus French checks) and writes PNGs to `docs/screenshots/`. Set `BASE_URL` if the server isn't on port 3133, and `ONLY=en-390-light` to run one variant.
 
 ## How the simulation works
 
@@ -70,13 +70,15 @@ src/
     sitemap.ts  robots.ts  icon.svg  globals.css (Monark 2026 tokens)
   components/
     ui/                     shadcn/ui + @monark/ui registry (wallet, connect-wallet, token-amount, network-badge, tx-status)
-    site/                   Monark standard header, footer, pairing, switches
+    site/                   Monark standard header, footer, brand, Demo chip, switches
     home/  diagrams/        hero fan, share bars, lifecycle diagram
     demo/                   app screens, wallet prompt, tx feedback, dialogs
   i18n/                     locale config, typed EN/FR dictionaries
   lib/demo/                 simulated chain and data layer
 docs/                       site plan, assets, screenshots
 scripts/screenshots.mjs     Playwright visual check
+scripts/wordcount.mjs       words per page (simplification pass, see docs/simplification.md)
+scripts/dictcount.mjs       words of UI copy per dictionary section
 ```
 
 Built with Next.js (App Router, TypeScript strict), Tailwind CSS v4, shadcn/ui on the [Monark UI registry](https://ui.monark.io) and Lucide icons, following the Monark brand guidelines (cream and espresso themes, Nunito Sans, flat orange).

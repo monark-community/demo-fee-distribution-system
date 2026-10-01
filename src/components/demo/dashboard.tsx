@@ -35,15 +35,12 @@ export function Dashboard() {
   const activity = splits
     .flatMap((s) => s.log.map((entry) => ({ entry, split: s })))
     .sort((a, b) => b.entry.at.localeCompare(a.entry.at))
-    .slice(0, 7)
+    .slice(0, 5)
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-semibold text-muted-foreground">{t(d.greeting, { name: demo.wallet.name })}</p>
-          <h1 className="mt-1 text-4xl font-extrabold tracking-display">{d.title}</h1>
-        </div>
+        <h1 className="text-4xl font-extrabold tracking-display">{d.title}</h1>
         <Button asChild size="lg">
           <Link href={href(locale, "/app/new")}>
             <PlusIcon aria-hidden="true" />
@@ -61,7 +58,6 @@ export function Dashboard() {
             </div>
           ))}
         </dl>
-        <p className="mt-2 text-xs text-muted-foreground">{d.stats.usdNote}</p>
       </section>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -72,7 +68,6 @@ export function Dashboard() {
           {splits.length === 0 ? (
             <div className="flex flex-col items-center rounded-3xl border border-dashed p-10 text-center">
               <p className="text-lg font-bold">{d.empty.title}</p>
-              <p className="mt-2 max-w-sm text-sm text-muted-foreground">{d.empty.body}</p>
               <Button asChild className="mt-6">
                 <Link href={href(locale, "/app/new")}>
                   <PlusIcon aria-hidden="true" />

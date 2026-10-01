@@ -1,4 +1,4 @@
-import { ArrowRightIcon, HandCoinsIcon, PlusIcon, ReceiptTextIcon, ShieldCheckIcon } from "lucide-react"
+import { ArrowRightIcon, PlusIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -22,7 +22,6 @@ export async function generateMetadata({ params }: PageProps<"/[locale]">): Prom
   return pageMetadata(locale, "/", null, getDictionary(locale).meta.description)
 }
 
-const OUTCOME_ICONS = [HandCoinsIcon, ReceiptTextIcon, ShieldCheckIcon]
 const PHOTOS = [studentsImg, teamImg, marketImg]
 
 const RULE_BARS = [
@@ -53,10 +52,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         />
         <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pt-12 pb-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.12fr)] lg:items-center lg:gap-12 lg:pt-20 lg:pb-24">
           <div>
-            <p className="eyebrow text-primary-ink">{h.eyebrow}</p>
             <h1
               id="hero-title"
-              className="mt-4 text-[2.25rem] leading-[1.08] font-extrabold tracking-display sm:text-5xl lg:text-[3.6rem]"
+              className="text-[2.25rem] leading-[1.08] font-extrabold tracking-display sm:text-5xl lg:text-[3.6rem]"
             >
               {h.title}
             </h1>
@@ -72,34 +70,9 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
                 <Link href={href(locale, "/how-it-works")}>{h.ctaSecondary}</Link>
               </Button>
             </div>
-            <p className="mt-6 text-xs text-muted-foreground">{dict.common.disclaimer}</p>
           </div>
           <HeroDiagram locale={locale} copy={h.diagram} />
         </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* Outcomes */}
-      <section aria-labelledby="outcomes-title" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-        <div className="max-w-2xl">
-          <h2 id="outcomes-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-            {h.outcomes.title}
-          </h2>
-          <p className="mt-4 text-muted-foreground">{h.outcomes.intro}</p>
-        </div>
-        <ul className="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
-          {h.outcomes.items.map((item, i) => {
-            const Icon = OUTCOME_ICONS[i] ?? HandCoinsIcon
-            return (
-              <li key={item.title}>
-                <Icon className="size-7 text-primary" strokeWidth={1.75} aria-hidden="true" />
-                <h3 className="mt-4 text-xl font-bold">{item.title}</h3>
-                <p className="mt-2 text-muted-foreground">{item.body}</p>
-              </li>
-            )
-          })}
-        </ul>
       </section>
 
       {/* Rules */}
@@ -107,8 +80,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr] lg:items-end">
             <div>
-              <p className="eyebrow text-primary-ink">{h.rules.eyebrow}</p>
-              <h2 id="rules-title" className="mt-3 text-3xl font-bold tracking-display sm:text-[2rem]">
+              <h2 id="rules-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
                 {h.rules.title}
               </h2>
             </div>
@@ -157,8 +129,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
       {/* Who */}
       <section aria-labelledby="who-title" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-        <p className="eyebrow text-primary-ink">{h.who.eyebrow}</p>
-        <h2 id="who-title" className="mt-3 max-w-2xl text-3xl font-bold tracking-display sm:text-[2rem]">
+        <h2 id="who-title" className="max-w-2xl text-3xl font-bold tracking-display sm:text-[2rem]">
           {h.who.title}
         </h2>
         <ul className="mt-10 grid gap-6 md:grid-cols-3">
@@ -211,7 +182,6 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             <h2 id="closing-title" className="text-2xl font-bold tracking-display sm:text-3xl">
               {h.closing.title}
             </h2>
-            <p className="mt-2 text-muted-foreground">{h.closing.body}</p>
           </div>
           <Button asChild size="lg" className="shrink-0">
             <Link href={href(locale, "/app")}>

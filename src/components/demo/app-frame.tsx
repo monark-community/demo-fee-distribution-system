@@ -1,32 +1,44 @@
 "use client"
 
-import { CheckIcon, Loader2Icon, WalletIcon, XCircleIcon } from "lucide-react"
+import { ArrowLeftIcon, Loader2Icon, WalletIcon, XCircleIcon } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { NetworkBadge } from "@/components/ui/network-badge"
+import { href } from "@/i18n/config"
 import { useDemo, useStorageOk } from "@/lib/demo/store"
-import { NETWORK_NAME } from "@/lib/demo/tokens"
 import { connectWallet } from "@/lib/demo/wallet"
 
 import { useAppCopy } from "./app-provider"
 import { DemoControls } from "./demo-controls"
-import { Disclaimer } from "./disclaimer"
 
-/** App chrome under the site header: network, disclaimer, demo controls; gates on wallet connection. */
+/**
+ * The app's one compact bar under the site header: a way back to the
+ * dashboard on inner pages, and one network pill that opens the demo
+ * controls. The testnet notice lives only in the wallet prompt (§11).
+ * Gates the content on wallet connection.
+ */
 export function AppFrame({ children }: { children: ReactNode }) {
   const demo = useDemo()
   const storageOk = useStorageOk()
-  const { app, disclaimer } = useAppCopy()
+  const { app, locale } = useAppCopy()
+  const pathname = usePathname() ?? ""
+  const home = href(locale, "/app")
+  const inner = pathname !== home && pathname.startsWith(`${home}/`) && demo?.wallet.status === "connected"
 
   return (
     <div className="flex flex-1 flex-col">
       <div className="border-b bg-secondary/40">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5 sm:px-6">
-          <NetworkBadge name={NETWORK_NAME} variant="outline" icon={<span className="block size-full rounded-full bg-success" />} />
-          <Disclaimer text={disclaimer} className="order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1" />
-          <div className="ml-auto sm:ml-0">
+        <div className="mx-auto flex h-12 max-w-6xl items-center gap-4 px-4 sm:px-6">
+          {inner ? (
+            <Link href={home} className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm font-semibold text-muted-foreground hover:text-foreground">
+              <ArrowLeftIcon className="size-4" aria-hidden="true" />
+              {app.dashboard.title}
+            </Link>
+          ) : null}
+          <div className="ml-auto">
             <DemoControls />
           </div>
         </div>
@@ -73,14 +85,6 @@ function ConnectGate() {
         {g.title}
       </h1>
       <p className="mt-3 text-muted-foreground">{g.body}</p>
-      <ul className="mt-6 flex flex-col gap-2 text-left text-sm">
-        {g.features.map((f) => (
-          <li key={f} className="flex items-center gap-2">
-            <CheckIcon className="size-4 text-success" aria-hidden="true" />
-            {f}
-          </li>
-        ))}
-      </ul>
       <Button
         size="lg"
         className="mt-8 w-full sm:w-auto"

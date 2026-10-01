@@ -16,8 +16,11 @@ export default async function NotFound() {
   const c = getDictionary(locale).common
   return (
     <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-4 py-20 text-center">
-      <Image src="/brand/monark-vertical-light.svg" alt="Monark" width={120} height={120} unoptimized className="h-28 w-auto dark:hidden" />
-      <Image src="/brand/monark-vertical-dark.svg" alt="Monark" width={120} height={120} unoptimized className="hidden h-28 w-auto dark:block" />
+      {/* The brand kit names files by lettering colour: "-dark" has dark
+          lettering (for the cream theme), "-light" has white lettering
+          (for espresso). */}
+      <Image src="/brand/monark-vertical-dark.svg" alt="Monark" width={120} height={120} unoptimized className="h-28 w-auto dark:hidden" />
+      <Image src="/brand/monark-vertical-light.svg" alt="Monark" width={120} height={120} unoptimized className="hidden h-28 w-auto dark:block" />
       <p className="eyebrow mt-10 text-primary-ink">{c.notFound.eyebrow}</p>
       <h1 className="mt-3 text-4xl font-extrabold tracking-display">{c.notFound.title}</h1>
       <p className="mt-4 text-muted-foreground">{c.notFound.body}</p>

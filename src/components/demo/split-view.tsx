@@ -9,7 +9,6 @@ import { ShareDot } from "@/components/diagrams/share-bar"
 import { SplitFan, type FanPhase } from "@/components/diagrams/split-fan"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { NetworkBadge } from "@/components/ui/network-badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Wallet, WalletAddress, WalletAvatar } from "@/components/ui/wallet"
 import { href } from "@/i18n/config"
@@ -26,7 +25,6 @@ import { usdValue } from "@/lib/demo/tokens"
 
 import { ActivityLog } from "./activity-log"
 import { useAppCopy } from "./app-provider"
-import { Disclaimer } from "./disclaimer"
 import { SharesDialog } from "./shares-dialog"
 import { SimulateDialog } from "./simulate-dialog"
 import { TxFeedback } from "./tx-feedback"
@@ -58,7 +56,7 @@ export function SplitView({ id }: { id: string }) {
 }
 
 function SplitDetail({ split }: { split: Split }) {
-  const { app, locale, seed, disclaimer } = useAppCopy()
+  const { app, locale, seed } = useAppCopy()
   const s = app.split
   const you = youSigner(seed)
   const mainTx = useTx()
@@ -136,21 +134,20 @@ function SplitDetail({ split }: { split: Split }) {
       (hash) => updateSplit(split.id, (x) => applyDistribution(x, { ...meta(hash), amount })),
       { skipPrompt: opts.skipPrompt }
     )
-    if (ok) {
-      setPhase("paid")
-      toast.success(t(s.toasts.distributed, { amount: formatToken(amount, split.token, locale), n: lines.length }))
-    } else {
+    // The fan-out stamps each line "Paid": that is the confirmation, no toast.
+    if (ok) setPhase("paid")
+    else {
       setPhase("idle")
       setPaidLines(null)
     }
   }
 
   async function propose() {
-    const ok = await mainTx.run(
+    // The approvals card that appears is the confirmation.
+    await mainTx.run(
       { title: t(app.summaries.requestApproval, { amount: formatToken(split.balance, split.token, locale) }), movesValue: true },
       (hash) => updateSplit(split.id, (x) => requestApproval(x, you, meta(hash)))
     )
-    if (ok) toast.success(s.toasts.proposed)
   }
 
   async function approveAs(signer: Signer) {
@@ -174,12 +171,9 @@ function SplitDetail({ split }: { split: Split }) {
         }),
       { skipPrompt: true }
     )
+    // The signer's "Approved" badge, or the fan-out when it executes, confirms it.
     if (ok) {
-      toast.success(t(s.toasts.approved, { name: signer.name }))
-      if (willExecute) {
-        setPhase("paid")
-        toast.success(t(s.toasts.distributed, { amount: formatToken(amount, split.token, locale), n: lines.length }))
-      }
+      if (willExecute) setPhase("paid")
     } else if (willExecute) {
       setPhase("idle")
       setPaidLines(null)
@@ -188,11 +182,11 @@ function SplitDetail({ split }: { split: Split }) {
 
   async function toggleFreeze() {
     const freezing = !frozen
-    const ok = await mainTx.run(
+    // The status badge and the frozen banner confirm it.
+    await mainTx.run(
       { title: t(freezing ? app.summaries.freeze : app.summaries.unfreeze, { name: split.name }), movesValue: false },
       (hash) => updateSplit(split.id, (x) => setFrozen(x, freezing, meta(hash)))
     )
-    if (ok) toast.success(freezing ? s.toasts.frozen : s.toasts.unfrozen)
   }
 
   function onPayment(amount: string, payer: { name: string; address: string }, hash: string) {
@@ -203,27 +197,24 @@ function SplitDetail({ split }: { split: Split }) {
     if (auto) {
       const lines = allocate(BigInt(next.balance), next)
       next = applyDistribution(next, { at: now(), hash, actor: seed.automatic, actorAddress: "", auto: true })
+      // Shared on arrival: the fan-out shows it.
       setPaidLines(lines)
       setPhase("paid")
-      toast.success(t(s.simulate.receivedAuto, { n: lines.length }))
     } else {
-      toast.success(t(s.simulate.received, { amount: formatToken(next.balance, next.token, locale) }))
+      toast.success(s.simulate.received)
     }
     updateSplit(split.id, () => next)
   }
 
   const busy = mainTx.busy
-  const reason = frozen ? s.reasons.frozen : split.pending ? s.reasons.pending : balance === 0n ? s.reasons.empty : null
+  // Frozen and pending have their own banner and card; only "empty" needs a line.
+  const reason = !frozen && !split.pending && balance === 0n ? s.emptyReason : null
 
   return (
     <div className="flex flex-col gap-8">
       {/* Header */}
       <div>
-        <Link href={href(locale, "/app")} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
-          <ArrowLeftIcon className="size-4" aria-hidden="true" />
-          {s.back}
-        </Link>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {frozen ? (
             <Badge variant="warning">
               <SnowflakeIcon aria-hidden="true" />
@@ -244,10 +235,7 @@ function SplitDetail({ split }: { split: Split }) {
         {split.purpose ? <p className="mt-2 max-w-2xl text-muted-foreground">{split.purpose}</p> : null}
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Wallet address={split.address} size="sm" name={s.contract} copyLabel={app.wallet.copy} copiedLabel={app.wallet.copied} />
-          <NetworkBadge name={NETWORK_NAME} variant="outline" icon={<span className="block size-full rounded-full bg-success" />} />
-          <span className="text-xs text-muted-foreground">
-            {t(s.created, { date: formatDate(split.createdAt, locale) })} · {s.owner}
-          </span>
+          <span className="text-xs text-muted-foreground">{t(s.created, { date: formatDate(split.createdAt, locale) })}</span>
         </div>
       </div>
 
@@ -298,13 +286,11 @@ function SplitDetail({ split }: { split: Split }) {
                 <p className="mt-1 text-xl font-extrabold tabular-nums">
                   {formatToken(paidLines ? paidLines.reduce((a, l) => a + BigInt(l.amount), 0n) : balance, split.token, locale)}
                 </p>
-                {balance === 0n && !paidLines ? <p className="mt-1 text-xs text-muted-foreground">{s.flowEmpty}</p> : null}
               </div>
             }
             lines={fanLines}
           />
         </div>
-        {split.autoDistribute && !frozen ? <p className="mt-4 text-xs text-muted-foreground">{s.autoOn}</p> : null}
       </section>
 
       {/* Approvals */}
@@ -339,7 +325,6 @@ function SplitDetail({ split }: { split: Split }) {
           onDismiss={mainTx.reset}
           onRetry={lastAction ? () => void lastAction() : undefined}
         />
-        <Disclaimer text={disclaimer} />
       </section>
 
       {/* Tabs */}

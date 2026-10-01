@@ -1,12 +1,12 @@
 // Visual check of every page and key flow with Playwright.
-// Usage: pnpm build && pnpm start   (in another terminal)
-//        pnpm screenshots            (BASE_URL defaults to http://localhost:3000)
+// Usage: pnpm build && pnpm start -p 3133   (in another terminal)
+//        pnpm screenshots            (BASE_URL defaults to http://localhost:3133)
 // Output: docs/screenshots/<locale>-<width>-<theme>-<name>.png
 import { mkdir } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright"
 
-const BASE = process.env.BASE_URL ?? "http://localhost:3000"
+const BASE = process.env.BASE_URL ?? "http://localhost:3133"
 const OUT = fileURLToPath(new URL("../docs/screenshots/", import.meta.url))
 const ONLY = process.env.ONLY // optional filter on the variant name
 
@@ -138,7 +138,7 @@ async function appFlows(page, v) {
   await page.getByText("Distributing…").first().waitFor()
   await page.getByRole("heading", { name: "Waiting to be distributed" }).scrollIntoViewIfNeeded()
   await shot(page, v, "flow3-distributing")
-  await page.getByText(/Paid .* to \d recipients/).first().waitFor({ timeout: 10000 })
+  await page.locator("section[aria-labelledby=flow-title]").getByText("Paid", { exact: true }).first().waitFor({ state: "attached", timeout: 10000 })
   await page.waitForTimeout(900)
   await page.getByRole("heading", { name: "Waiting to be distributed" }).scrollIntoViewIfNeeded()
   await shot(page, v, "flow3-paid")
@@ -158,13 +158,13 @@ async function appFlows(page, v) {
   await page.getByRole("heading", { name: "Payout waiting for approvals" }).scrollIntoViewIfNeeded()
   await shot(page, v, "flow4-approvals")
   await page.getByRole("button", { name: /Approve as Inès/ }).click()
-  await page.getByText(/Paid .* to \d recipients/).first().waitFor({ timeout: 10000 })
+  await page.locator("section[aria-labelledby=flow-title]").getByText("Paid", { exact: true }).first().waitFor({ state: "attached", timeout: 10000 })
   await page.waitForTimeout(900)
   await page.getByRole("heading", { name: "Waiting to be distributed" }).scrollIntoViewIfNeeded()
   await shot(page, v, "flow4-approved-paid")
   await page.getByRole("button", { name: "Freeze split" }).click()
   await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click()
-  await page.getByText("This split is frozen.").waitFor({ timeout: 10000 })
+  await page.getByText("Frozen: payments are held").waitFor({ timeout: 10000 })
   await page.evaluate(() => window.scrollTo(0, 0))
   await shot(page, v, "flow4-frozen", true)
 
@@ -187,7 +187,7 @@ async function frenchFlow(page, v) {
   await page.getByRole("dialog").waitFor()
   await shot(page, v, "flow3-prompt")
   await page.getByRole("dialog").getByRole("button", { name: "Confirmer" }).click()
-  await page.getByText(/versés à \d destinataires/).first().waitFor({ timeout: 10000 })
+  await page.locator("section[aria-labelledby=flow-title]").getByText("Payé", { exact: true }).first().waitFor({ state: "attached", timeout: 10000 })
   await page.waitForTimeout(900)
   await page.evaluate(() => window.scrollTo(0, 0))
   await shot(page, v, "flow3-paid", true)
