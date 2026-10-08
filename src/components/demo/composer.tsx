@@ -23,8 +23,7 @@ import type { RuleKind, Split, TokenSymbol } from "@/lib/demo/types"
 import { formatNumber, formatToken } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
-import { useAppCopy } from "./app-provider"
-import { TxFeedback } from "./tx-feedback"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 
 interface DraftRecipient {
   id: string
@@ -569,7 +568,7 @@ export function Composer() {
                   {c.errors.summary}
                 </p>
               ) : null}
-              <TxFeedback state={tx.state} pendingLabel={c.deploying} onRetry={() => void deploy()} onDismiss={tx.reset} />
+              <DemoTxFeedback state={tx.state} pendingLabel={c.deploying} onRetry={() => void deploy()} onDismiss={tx.reset} />
             </div>
           </div>
         </aside>

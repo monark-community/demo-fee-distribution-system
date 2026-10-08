@@ -18,8 +18,7 @@ import type { Split } from "@/lib/demo/types"
 import { formatToken } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
-import { useAppCopy } from "./app-provider"
-import { TxFeedback } from "./tx-feedback"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 
 const DEFAULT_AMOUNT: Record<Split["token"], string> = { tUSDC: "1200", tDAI: "860", tETH: "0.75" }
 
@@ -149,7 +148,7 @@ export function SimulateDialog({
           </ul>
         </div>
 
-        <TxFeedback state={tx.state} onRetry={() => void send()} onDismiss={tx.reset} />
+        <DemoTxFeedback state={tx.state} onRetry={() => void send()} onDismiss={tx.reset} />
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button variant="outline" size="lg" onClick={() => setOpen(false)} disabled={tx.busy}>

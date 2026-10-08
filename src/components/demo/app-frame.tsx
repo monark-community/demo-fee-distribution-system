@@ -6,13 +6,17 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { ReactNode } from "react"
 
+import { toast } from "sonner"
+
+import { AppLoading } from "@/components/ui/app-loading"
 import { Button } from "@/components/ui/button"
+import { DemoControls } from "@/components/ui/demo-controls"
 import { href } from "@/i18n/config"
-import { useDemo, useStorageOk } from "@/lib/demo/store"
+import { resetDemo, setSettings, useDemo, useStorageOk } from "@/lib/demo/store"
+import { NETWORK_NAME } from "@/lib/demo/tokens"
 import { connectWallet } from "@/lib/demo/wallet"
 
 import { useAppCopy } from "./app-provider"
-import { DemoControls } from "./demo-controls"
 
 /**
  * The app's one compact bar under the site header: a way back to the
@@ -39,7 +43,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
             </Link>
           ) : null}
           <div className="ml-auto">
-            <DemoControls />
+            <AppDemoControls />
           </div>
         </div>
       </div>
@@ -55,19 +59,37 @@ export function AppFrame({ children }: { children: ReactNode }) {
   )
 }
 
-export function AppLoading({ label }: { label: string }) {
+/** The demo controls (@monark/ui DemoControls), wired to the demo store. */
+function AppDemoControls() {
+  const demo = useDemo()
+  const { app, seed, locale } = useAppCopy()
+  const c = app.controls
+  if (!demo) return null
   return (
-    <div role="status" aria-live="polite" className="flex flex-col gap-4">
-      <span className="sr-only">{label}</span>
-      <div className="h-9 w-56 animate-pulse rounded-full bg-muted" />
-      <div className="grid gap-3 sm:grid-cols-4">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />
-        ))}
-      </div>
-      <div className="h-40 animate-pulse rounded-2xl bg-muted" />
-      <div className="h-40 animate-pulse rounded-2xl bg-muted" />
-    </div>
+    <DemoControls
+      networkName={NETWORK_NAME}
+      slow={demo.settings.slow}
+      onSlowChange={(v) => setSettings({ slow: v })}
+      failNext={demo.settings.failNext}
+      onFailNextChange={(v) => setSettings({ failNext: v })}
+      onReset={() => {
+        resetDemo(seed, locale)
+        toast.success(c.resetDone)
+      }}
+      title={c.title}
+      openLabel={c.open}
+      slowLabel={c.slow}
+      slowHint={c.slowHint}
+      failNextLabel={c.failNext}
+      failNextHint={c.failNextHint}
+      resetLabel={c.reset}
+      resetHint={c.resetHint}
+      resetConfirmTitle={c.resetConfirm}
+      resetConfirmBody={c.resetConfirmBody}
+      resetConfirmLabel={c.resetDo}
+      cancelLabel={c.cancel}
+      closeLabel={app.close}
+    />
   )
 }
 

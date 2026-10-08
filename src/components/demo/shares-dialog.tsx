@@ -17,8 +17,7 @@ import type { Split } from "@/lib/demo/types"
 import { formatNumber } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
-import { useAppCopy } from "./app-provider"
-import { TxFeedback } from "./tx-feedback"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 
 const toInput = (share: number, rule: Split["rule"]) => (rule === "fixed" ? String(Number((share / 100).toFixed(2))) : String(share))
 const toWeight = (v: string, rule: Split["rule"]) => {
@@ -119,7 +118,7 @@ export function SharesDialog({ split, disabled }: { split: Split; disabled?: boo
             </li>
           ))}
         </ul>
-        <TxFeedback state={tx.state} onRetry={() => void save()} onDismiss={tx.reset} />
+        <DemoTxFeedback state={tx.state} onRetry={() => void save()} onDismiss={tx.reset} />
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button variant="outline" size="lg" onClick={() => setOpen(false)} disabled={tx.busy}>
             {app.controls.cancel}

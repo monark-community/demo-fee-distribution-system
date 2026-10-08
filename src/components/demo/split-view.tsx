@@ -24,10 +24,9 @@ import { formatDate, formatPercent, formatToken, formatUnits, formatUsd } from "
 import { usdValue } from "@/lib/demo/tokens"
 
 import { ActivityLog } from "./activity-log"
-import { useAppCopy } from "./app-provider"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 import { SharesDialog } from "./shares-dialog"
 import { SimulateDialog } from "./simulate-dialog"
-import { TxFeedback } from "./tx-feedback"
 
 const now = () => new Date().toISOString()
 
@@ -320,7 +319,7 @@ function SplitDetail({ split }: { split: Split }) {
           <SharesDialog split={split} disabled={busy} />
         </div>
         {reason ? <p className="text-sm text-muted-foreground">{reason}</p> : null}
-        <TxFeedback
+        <DemoTxFeedback
           state={mainTx.state}
           onDismiss={mainTx.reset}
           onRetry={lastAction ? () => void lastAction() : undefined}
