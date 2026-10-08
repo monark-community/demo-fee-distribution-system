@@ -6,7 +6,7 @@ import { notFound } from "next/navigation"
 
 import { ShareBar } from "@/components/diagrams/share-bar"
 import { HeroDiagram } from "@/components/home/hero-diagram"
-import { SectionDivider } from "@/components/site/section-divider"
+import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
 import { href, isLocale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
@@ -155,7 +155,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         </ul>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       {/* FAQ */}
       <section aria-labelledby="faq-title" className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 lg:py-20">

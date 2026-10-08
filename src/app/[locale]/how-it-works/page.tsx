@@ -5,7 +5,7 @@ import { notFound } from "next/navigation"
 
 import { LifecycleDiagram } from "@/components/diagrams/lifecycle-diagram"
 import { ShareBar, ShareDot } from "@/components/diagrams/share-bar"
-import { SectionDivider } from "@/components/site/section-divider"
+import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
 import { href, isLocale, REPO_URL, type Locale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
@@ -162,7 +162,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
         </ol>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="rules-title">
         <h2 id="rules-title" className="text-2xl font-bold tracking-display sm:text-[2rem]">
