@@ -67,12 +67,12 @@ src/
       app/                  demo: dashboard, new, split/[id]
       how-it-works/  credits/  pricing/ (internal, unlinked, noindex)
       opengraph-image.tsx
-    sitemap.ts  robots.ts  icon.svg  globals.css (Monark 2026 tokens)
+    sitemap.ts  robots.ts  icon.svg  globals.css (@monark/theme + Splitflow keyframes)
   components/
-    ui/                     shadcn/ui + @monark/ui registry (wallet, connect-wallet, token-amount, network-badge, tx-status)
-    site/                   Monark standard header, footer, brand, Demo chip, switches
+    ui/                     @monark/ui 2 registry items (primitives, site shell, demo app, web3); re-add with --overwrite
+    site/                   header and footer: the registry site shell wired to the routes and dictionary
     home/  diagrams/        hero fan, share bars, lifecycle diagram
-    demo/                   app screens, wallet prompt, tx feedback, dialogs
+    demo/                   app screens and dialogs; app-provider wires the registry wallet prompt and tx feedback
   i18n/                     locale config, typed EN/FR dictionaries
   lib/demo/                 simulated chain and data layer
 docs/                       site plan, assets, screenshots

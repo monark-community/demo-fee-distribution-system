@@ -5,9 +5,11 @@ import { useId, useState } from "react"
 
 import { ShareDot } from "@/components/diagrams/share-bar"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { FieldError } from "@/components/ui/field-error"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { t } from "@/i18n/t"
 import { allocate } from "@/lib/demo/allocate"
 import { useTx } from "@/lib/demo/chain"
@@ -16,10 +18,8 @@ import { needsApproval } from "@/lib/demo/ops"
 import { parseUnits, TOKENS } from "@/lib/demo/tokens"
 import type { Split } from "@/lib/demo/types"
 import { formatToken } from "@/lib/format"
-import { cn } from "@/lib/utils"
 
-import { useAppCopy } from "./app-provider"
-import { TxFeedback } from "./tx-feedback"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 
 const DEFAULT_AMOUNT: Record<Split["token"], string> = { tUSDC: "1200", tDAI: "860", tETH: "0.75" }
 
@@ -82,31 +82,34 @@ export function SimulateDialog({
         </Button>
       </DialogTrigger>
       <DialogContent closeLabel={app.close} className="sm:max-w-lg">
-        <DialogHeader className="text-left">
-          <DialogTitle className="text-xl font-extrabold">{s.title}</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>{s.title}</DialogTitle>
           <DialogDescription>{s.body}</DialogDescription>
         </DialogHeader>
 
-        <fieldset>
-          <legend className="text-sm font-semibold">{s.from}</legend>
-          <div className="mt-2 flex flex-wrap gap-2">
+        <div>
+          <p id={`${uid}-payer`} className="text-sm font-bold">
+            {s.from}
+          </p>
+          <ToggleGroup
+            type="single"
+            variant="chip"
+            size="sm"
+            aria-labelledby={`${uid}-payer`}
+            value={String(payerIdx)}
+            onValueChange={(v) => v && setPayerIdx(Number(v))}
+            className="mt-2"
+          >
             {s.payers.map((p, i) => (
-              <label
-                key={p}
-                className={cn(
-                  "inline-flex min-h-9 cursor-pointer items-center rounded-full border px-3.5 py-1 text-sm font-semibold transition-colors duration-150 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
-                  i === payerIdx ? "border-foreground bg-foreground text-background" : "border-input hover:bg-muted"
-                )}
-              >
-                <input type="radio" className="sr-only" name={`${uid}-payer`} checked={i === payerIdx} onChange={() => setPayerIdx(i)} />
+              <ToggleGroupItem key={p} value={String(i)}>
                 {p}
-              </label>
+              </ToggleGroupItem>
             ))}
-          </div>
-        </fieldset>
+          </ToggleGroup>
+        </div>
 
         <div>
-          <Label htmlFor={`${uid}-amount`} className="text-sm font-semibold">
+          <Label htmlFor={`${uid}-amount`}>
             {s.amount} ({split.token})
           </Label>
           <Input
@@ -118,15 +121,13 @@ export function SimulateDialog({
             aria-invalid={!validAmount}
             aria-describedby={!validAmount ? `${uid}-amount-err` : undefined}
           />
-          {!validAmount ? (
-            <p id={`${uid}-amount-err`} className="mt-1.5 text-xs font-semibold text-destructive">
-              {app.composer.errors.amount}
-            </p>
-          ) : null}
+          <FieldError id={`${uid}-amount-err`} className="mt-1.5">
+            {!validAmount ? app.composer.errors.amount : null}
+          </FieldError>
         </div>
 
         <div>
-          <p className="text-sm font-semibold">{s.preview}</p>
+          <p className="text-sm font-bold">{s.preview}</p>
           {frozen ? <p className="mt-2 rounded-xl border border-warning/40 bg-warning/10 p-3 text-sm">{s.previewHeld}</p> : null}
           {approvalNeeded && split.approval ? (
             <p className="mt-2 rounded-xl border p-3 text-sm">
@@ -149,16 +150,16 @@ export function SimulateDialog({
           </ul>
         </div>
 
-        <TxFeedback state={tx.state} onRetry={() => void send()} onDismiss={tx.reset} />
+        <DemoTxFeedback state={tx.state} onRetry={() => void send()} onDismiss={tx.reset} />
 
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <DialogFooter>
           <Button variant="outline" size="lg" onClick={() => setOpen(false)} disabled={tx.busy}>
             {s.cancel}
           </Button>
           <Button size="lg" onClick={() => void send()} disabled={!validAmount || tx.busy}>
             {s.send}
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

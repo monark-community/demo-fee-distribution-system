@@ -9,6 +9,7 @@ import { ShareDot } from "@/components/diagrams/share-bar"
 import { SplitFan, type FanPhase } from "@/components/diagrams/split-fan"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Stat, StatGroup, StatHint, StatLabel, StatValue } from "@/components/ui/stat"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Wallet, WalletAddress, WalletAvatar } from "@/components/ui/wallet"
 import { href } from "@/i18n/config"
@@ -24,10 +25,9 @@ import { formatDate, formatPercent, formatToken, formatUnits, formatUsd } from "
 import { usdValue } from "@/lib/demo/tokens"
 
 import { ActivityLog } from "./activity-log"
-import { useAppCopy } from "./app-provider"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 import { SharesDialog } from "./shares-dialog"
 import { SimulateDialog } from "./simulate-dialog"
-import { TxFeedback } from "./tx-feedback"
 
 const now = () => new Date().toISOString()
 
@@ -247,21 +247,24 @@ function SplitDetail({ split }: { split: Split }) {
       ) : null}
 
       {/* Stats */}
-      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <StatGroup className="grid-cols-1 sm:grid-cols-3 lg:grid-cols-3">
         {[
           { label: s.stats.received, value: split.received },
           { label: s.stats.distributed, value: split.distributed },
           { label: s.stats.waiting, value: split.balance, accent: balance > 0n },
         ].map((x) => (
-          <div key={x.label} className="flex flex-wrap items-baseline justify-between gap-x-3 rounded-2xl border bg-card p-3 sm:block sm:p-4">
-            <dt className="text-xs font-semibold text-muted-foreground">{x.label}</dt>
-            <dd className={`mt-1 text-base font-extrabold tabular-nums sm:text-xl ${x.accent ? "text-primary-ink" : ""}`}>
-              {formatToken(x.value, split.token, locale)}
-            </dd>
-            <dd className="basis-full text-right text-xs text-muted-foreground tabular-nums sm:text-left">{formatUsd(usdValue(x.value, split.token), locale)}</dd>
-          </div>
+          // Compact on phones: label and figure on one line, the USD value under them.
+          <Stat
+            key={x.label}
+            tone={x.accent ? "primary" : "default"}
+            className="flex-row flex-wrap items-baseline justify-between gap-x-3 p-3 sm:flex-col sm:flex-nowrap sm:items-stretch sm:p-4"
+          >
+            <StatLabel>{x.label}</StatLabel>
+            <StatValue className="text-base sm:text-xl">{formatToken(x.value, split.token, locale)}</StatValue>
+            <StatHint className="basis-full text-right sm:basis-auto sm:text-left">{formatUsd(usdValue(x.value, split.token), locale)}</StatHint>
+          </Stat>
         ))}
-      </dl>
+      </StatGroup>
 
       {/* Flow panel */}
       <section aria-labelledby="flow-title" className="rounded-3xl border bg-card/60 p-4 sm:p-6">
@@ -320,7 +323,7 @@ function SplitDetail({ split }: { split: Split }) {
           <SharesDialog split={split} disabled={busy} />
         </div>
         {reason ? <p className="text-sm text-muted-foreground">{reason}</p> : null}
-        <TxFeedback
+        <DemoTxFeedback
           state={mainTx.state}
           onDismiss={mainTx.reset}
           onRetry={lastAction ? () => void lastAction() : undefined}

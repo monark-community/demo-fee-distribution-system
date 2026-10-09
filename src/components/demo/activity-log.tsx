@@ -4,6 +4,8 @@ import { ChevronDownIcon, DownloadIcon } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyDescription } from "@/components/ui/empty"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { TxStatus } from "@/components/ui/tx-status"
 import type { AuditEntry, AuditKind, Split } from "@/lib/demo/types"
 import { TOKENS } from "@/lib/demo/tokens"
@@ -68,31 +70,36 @@ export function ActivityLog({ split }: { split: Split }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div role="group" aria-label={a.filterLabel} className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
+        <ToggleGroup
+          type="single"
+          variant="chip"
+          size="sm"
+          aria-label={a.filterLabel}
+          value={filter}
+          onValueChange={(v) => v && setFilter(v as Filter)}
+          className="no-scrollbar -mx-1 max-w-full flex-nowrap gap-1 overflow-x-auto px-1 py-1"
+        >
           {(["all", "payments", "distributions", "approvals", "safety"] as const).map((f) => (
-            <button
-              key={f}
-              type="button"
-              aria-pressed={filter === f}
-              onClick={() => setFilter(f)}
-              className={cn(
-                "inline-flex h-9 shrink-0 items-center rounded-full border px-3.5 text-sm font-bold transition-colors duration-150",
-                filter === f ? "border-foreground bg-foreground text-background" : "border-input text-muted-foreground hover:text-foreground"
-              )}
-            >
+            <ToggleGroupItem key={f} value={f}>
               {a.filters[f]}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
         <Button variant="outline" size="sm" onClick={exportCsv} className="self-start sm:self-auto">
           <DownloadIcon aria-hidden="true" />
           {a.export}
         </Button>
       </div>
 
-      {onlyCreated && filter === "all" ? <p className="rounded-2xl border border-dashed p-4 text-sm text-muted-foreground">{a.empty}</p> : null}
+      {onlyCreated && filter === "all" ? (
+        <Empty align="start" size="sm">
+          <EmptyDescription>{a.empty}</EmptyDescription>
+        </Empty>
+      ) : null}
       {entries.length === 0 ? (
-        <p className="rounded-2xl border border-dashed p-6 text-center text-sm text-muted-foreground">{a.emptyFiltered}</p>
+        <Empty size="sm" role="status">
+          <EmptyDescription>{a.emptyFiltered}</EmptyDescription>
+        </Empty>
       ) : (
         <ol className="divide-y rounded-2xl border bg-card">
           {entries.map((e) => (

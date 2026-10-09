@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 import { ShareBar, ShareDot } from "@/components/diagrams/share-bar"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { t } from "@/i18n/t"
 import { useTx } from "@/lib/demo/chain"
@@ -17,8 +17,7 @@ import type { Split } from "@/lib/demo/types"
 import { formatNumber } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
-import { useAppCopy } from "./app-provider"
-import { TxFeedback } from "./tx-feedback"
+import { DemoTxFeedback, useAppCopy } from "./app-provider"
 
 const toInput = (share: number, rule: Split["rule"]) => (rule === "fixed" ? String(Number((share / 100).toFixed(2))) : String(share))
 const toWeight = (v: string, rule: Split["rule"]) => {
@@ -76,8 +75,8 @@ export function SharesDialog({ split, disabled }: { split: Split; disabled?: boo
         </Button>
       </DialogTrigger>
       <DialogContent closeLabel={app.close} className="sm:max-w-lg">
-        <DialogHeader className="text-left">
-          <DialogTitle className="text-xl font-extrabold">{sh.title}</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>{sh.title}</DialogTitle>
           <DialogDescription>{sh.body}</DialogDescription>
         </DialogHeader>
         <ShareBar
@@ -119,15 +118,15 @@ export function SharesDialog({ split, disabled }: { split: Split; disabled?: boo
             </li>
           ))}
         </ul>
-        <TxFeedback state={tx.state} onRetry={() => void save()} onDismiss={tx.reset} />
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <DemoTxFeedback state={tx.state} onRetry={() => void save()} onDismiss={tx.reset} />
+        <DialogFooter>
           <Button variant="outline" size="lg" onClick={() => setOpen(false)} disabled={tx.busy}>
             {app.controls.cancel}
           </Button>
           <Button size="lg" onClick={() => void save()} disabled={!valid || tx.busy}>
             {sh.save}
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
