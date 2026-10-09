@@ -7,10 +7,13 @@ import { useId, useMemo, useState } from "react"
 
 import { ShareBar, ShareDot } from "@/components/diagrams/share-bar"
 import { Button } from "@/components/ui/button"
+import { FieldError } from "@/components/ui/field-error"
 import { InfoTip } from "@/components/ui/info-tip"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem, RadioGroupItemTitle } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
 import { allocate } from "@/lib/demo/allocate"
@@ -269,25 +272,26 @@ export function Composer() {
     <div className="flex flex-col gap-8">
       <h1 className="text-4xl font-extrabold tracking-display">{c.title}</h1>
 
-      <fieldset>
-        <legend className="text-sm font-bold">{c.templates.title}</legend>
-        <div className="mt-3 flex flex-wrap gap-2">
+      <div>
+        <p id={`${uid}-templates`} className="text-sm font-bold">
+          {c.templates.title}
+        </p>
+        <ToggleGroup
+          type="single"
+          variant="chip"
+          aria-labelledby={`${uid}-templates`}
+          value={template}
+          // Picking the current template again reloads it, as before.
+          onValueChange={(v) => applyTemplate((v || template) as keyof typeof templates)}
+          className="mt-3"
+        >
           {(["club", "hackathon", "coop", "blank"] as const).map((key) => (
-            <button
-              key={key}
-              type="button"
-              aria-pressed={template === key}
-              onClick={() => applyTemplate(key)}
-              className={cn(
-                "inline-flex h-10 items-center rounded-full border px-4 text-sm font-bold transition-colors duration-150",
-                template === key ? "border-foreground bg-foreground text-background" : "border-input hover:bg-muted"
-              )}
-            >
+            <ToggleGroupItem key={key} value={key}>
               {c.templates[key]}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
-      </fieldset>
+        </ToggleGroup>
+      </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
         <form
@@ -311,15 +315,24 @@ export function Composer() {
               <Field id={`${uid}-purpose`} label={c.purpose}>
                 <Input id={`${uid}-purpose`} value={draft.purpose} placeholder={c.purposePlaceholder} onChange={(e) => patch({ purpose: e.target.value })} maxLength={140} />
               </Field>
-              <fieldset>
-                <legend className="text-sm font-semibold">{c.token}</legend>
-                <PillRadio
-                  name={`${uid}-token`}
+              <div className="flex flex-col gap-2">
+                <p id={`${uid}-token`} className="text-sm font-bold">
+                  {c.token}
+                </p>
+                <ToggleGroup
+                  type="single"
+                  variant="pill"
+                  aria-labelledby={`${uid}-token`}
                   value={draft.token}
-                  options={TOKEN_LIST.map((s) => ({ value: s, label: s }))}
-                  onChange={(v) => patch({ token: v as TokenSymbol })}
-                />
-              </fieldset>
+                  onValueChange={(v) => v && patch({ token: v as TokenSymbol })}
+                >
+                  {TOKEN_LIST.map((s) => (
+                    <ToggleGroupItem key={s} value={s}>
+                      {s}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
             </div>
           </section>
 
@@ -337,41 +350,29 @@ export function Composer() {
                 </Link>
               </InfoTip>
             </div>
-            <fieldset className="mt-4">
-              <legend className="sr-only">{c.ruleTitle}</legend>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {(["fixed", "points"] as const).map((rule) => (
-                  <label
-                    key={rule}
-                    className={cn(
-                      "flex cursor-pointer items-center rounded-2xl border p-4 transition-colors duration-150 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
-                      draft.rule === rule ? "border-primary bg-secondary/60" : "hover:bg-muted/60"
-                    )}
-                  >
-                    <span className="flex items-center gap-2 text-sm font-bold">
-                      <input
-                        type="radio"
-                        name={`${uid}-rulekind`}
-                        value={rule}
-                        checked={draft.rule === rule}
-                        onChange={() => {
-                          const recipients =
-                            rule === "points" && draft.rule === "fixed"
-                              ? draft.recipients.map((r) => ({ ...r, share: r.share ? String(Math.max(1, Math.round(Number(r.share.replace(",", ".")) || 0))) : "" }))
-                              : draft.recipients
-                          patch({ rule, recipients })
-                        }}
-                        className="size-4 accent-[var(--primary)]"
-                      />
-                      {c.rules[rule]}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+            <RadioGroup
+              variant="card"
+              aria-labelledby={`${uid}-rule`}
+              value={draft.rule}
+              onValueChange={(value) => {
+                const rule = value as RuleKind
+                const recipients =
+                  rule === "points" && draft.rule === "fixed"
+                    ? draft.recipients.map((r) => ({ ...r, share: r.share ? String(Math.max(1, Math.round(Number(r.share.replace(",", ".")) || 0))) : "" }))
+                    : draft.recipients
+                patch({ rule, recipients })
+              }}
+              className="mt-4 sm:grid-cols-2"
+            >
+              {(["fixed", "points"] as const).map((rule) => (
+                <RadioGroupItem key={rule} value={rule}>
+                  <RadioGroupItemTitle>{c.rules[rule]}</RadioGroupItemTitle>
+                </RadioGroupItem>
+              ))}
+            </RadioGroup>
 
             <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border p-4">
-              <Label htmlFor={`${uid}-cover`} className="text-sm font-bold">
+              <Label htmlFor={`${uid}-cover`}>
                 {c.cover}
               </Label>
               <Switch id={`${uid}-cover`} checked={draft.coverOn} onCheckedChange={(v) => patch({ coverOn: v })} />
@@ -394,7 +395,7 @@ export function Composer() {
                     </div>
                   </Field>
                 </div>
-                {err(errors.cover) ? <p className="text-sm text-destructive sm:col-span-2">{errors.cover}</p> : null}
+                <FieldError className="sm:col-span-2">{err(errors.cover)}</FieldError>
               </div>
             ) : null}
 
@@ -476,7 +477,7 @@ export function Composer() {
                 )
               })}
             </ol>
-            {err(errors.recipients) ? <p className="mt-3 text-sm text-destructive">{errors.recipients}</p> : null}
+            <FieldError className="mt-3">{err(errors.recipients)}</FieldError>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button type="button" variant="outline" onClick={() => patch({ recipients: [...draft.recipients, { id: rid(), label: "", address: "", share: "" }] })} disabled={draft.recipients.length >= 12}>
                 <PlusIcon aria-hidden="true" />
@@ -496,7 +497,7 @@ export function Composer() {
             <div className="mt-4 flex flex-col divide-y rounded-2xl border">
               <div className="p-4">
                 <div className="flex items-center justify-between gap-4">
-                  <Label htmlFor={`${uid}-appr`} className="text-sm font-bold">
+                  <Label htmlFor={`${uid}-appr`}>
                     {c.approvals}
                   </Label>
                   <Switch id={`${uid}-appr`} checked={draft.approvalsOn} onCheckedChange={(v) => patch({ approvalsOn: v })} />
@@ -512,7 +513,7 @@ export function Composer() {
               </div>
               <div className="flex items-center justify-between gap-4 p-4">
                 <div className="flex items-center gap-1">
-                  <Label htmlFor={`${uid}-auto`} className="text-sm font-bold">
+                  <Label htmlFor={`${uid}-auto`}>
                     {c.auto}
                   </Label>
                   <InfoTip label={c.autoInfoLabel} className="-my-2">
@@ -532,7 +533,7 @@ export function Composer() {
               {c.preview}
             </h2>
             <div className="mt-4">
-              <Label htmlFor={`${uid}-amount`} className="text-sm font-semibold">
+              <Label htmlFor={`${uid}-amount`}>
                 {c.previewIf} ({draft.token})
               </Label>
               <Input id={`${uid}-amount`} inputMode="decimal" className="mt-2 text-lg font-bold tabular-nums" value={previewAmount} onChange={(e) => setPreviewAmount(e.target.value)} />
@@ -563,11 +564,7 @@ export function Composer() {
                 <RocketIcon aria-hidden="true" />
                 {tx.busy ? c.deploying : c.deploy}
               </Button>
-              {showErrors && !valid ? (
-                <p role="alert" className="text-sm text-destructive">
-                  {c.errors.summary}
-                </p>
-              ) : null}
+              <FieldError>{showErrors && !valid ? c.errors.summary : null}</FieldError>
               <DemoTxFeedback state={tx.state} pendingLabel={c.deploying} onRetry={() => void deploy()} onDismiss={tx.reset} />
             </div>
           </div>
@@ -580,34 +577,9 @@ export function Composer() {
 function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id} className="text-sm font-semibold">
-        {label}
-      </Label>
+      <Label htmlFor={id}>{label}</Label>
       {children}
-      {error ? (
-        <p id={`${id}-err`} className="text-xs font-semibold text-destructive">
-          {error}
-        </p>
-      ) : null}
-    </div>
-  )
-}
-
-function PillRadio({ name, value, options, onChange }: { name: string; value: string; options: { value: string; label: string }[]; onChange: (v: string) => void }) {
-  return (
-    <div className="mt-2 inline-flex flex-wrap gap-1 rounded-full border p-1">
-      {options.map((o) => (
-        <label
-          key={o.value}
-          className={cn(
-            "inline-flex h-9 cursor-pointer items-center rounded-full px-4 text-sm font-bold transition-colors duration-150 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
-            value === o.value ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <input type="radio" name={name} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} className="sr-only" />
-          {o.label}
-        </label>
-      ))}
+      <FieldError id={`${id}-err`}>{error}</FieldError>
     </div>
   )
 }

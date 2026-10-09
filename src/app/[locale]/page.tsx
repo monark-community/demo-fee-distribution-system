@@ -1,4 +1,4 @@
-import { ArrowRightIcon, PlusIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -7,7 +7,9 @@ import { notFound } from "next/navigation"
 import { ShareBar } from "@/components/diagrams/share-bar"
 import { HeroDiagram } from "@/components/home/hero-diagram"
 import { SectionDivider } from "@/components/ui/section-divider"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
+import { SectionHeading } from "@/components/ui/section-heading"
 import { href, isLocale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
 import { pageMetadata } from "@/lib/metadata"
@@ -79,11 +81,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <section aria-labelledby="rules-title" className="border-y bg-secondary/50">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr] lg:items-end">
-            <div>
-              <h2 id="rules-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-                {h.rules.title}
-              </h2>
-            </div>
+            <SectionHeading title={h.rules.title} titleId="rules-title" />
             <p className="text-muted-foreground">{h.rules.body}</p>
           </div>
           <ul className="mt-10 grid gap-4 md:grid-cols-3">
@@ -129,9 +127,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
       {/* Who */}
       <section aria-labelledby="who-title" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-        <h2 id="who-title" className="max-w-2xl text-3xl font-bold tracking-display sm:text-[2rem]">
-          {h.who.title}
-        </h2>
+        <SectionHeading title={h.who.title} titleId="who-title" className="max-w-2xl" />
         <ul className="mt-10 grid gap-6 md:grid-cols-3">
           {h.who.items.map((item, i) => (
             <li key={item.title} className="overflow-hidden rounded-2xl border bg-card">
@@ -159,20 +155,15 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
       {/* FAQ */}
       <section aria-labelledby="faq-title" className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 lg:py-20">
-        <h2 id="faq-title" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-          {h.faq.title}
-        </h2>
-        <div className="mt-8 divide-y border-y">
+        <SectionHeading title={h.faq.title} titleId="faq-title" />
+        <Accordion type="multiple" variant="plus" className="mt-8 border-y">
           {h.faq.items.map((item) => (
-            <details key={item.q} className="group py-1">
-              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-3 text-lg font-bold [&::-webkit-details-marker]:hidden">
-                {item.q}
-                <PlusIcon className="size-5 shrink-0 text-primary transition-transform duration-200 group-open:rotate-45" aria-hidden="true" />
-              </summary>
-              <p className="max-w-[68ch] pb-5 text-muted-foreground">{item.a}</p>
-            </details>
+            <AccordionItem key={item.q} value={item.q}>
+              <AccordionTrigger>{item.q}</AccordionTrigger>
+              <AccordionContent>{item.a}</AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </section>
 
       {/* Closing */}

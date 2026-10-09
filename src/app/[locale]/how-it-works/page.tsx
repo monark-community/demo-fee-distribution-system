@@ -1,4 +1,4 @@
-import { ArrowRightIcon, PlusIcon, ShieldCheckIcon, SnowflakeIcon } from "lucide-react"
+import { ArrowRightIcon, ShieldCheckIcon, SnowflakeIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -7,6 +7,8 @@ import { LifecycleDiagram } from "@/components/diagrams/lifecycle-diagram"
 import { ShareBar, ShareDot } from "@/components/diagrams/share-bar"
 import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
+import { Disclosure } from "@/components/ui/disclosure"
+import { SectionHeading } from "@/components/ui/section-heading"
 import { href, isLocale, REPO_URL, type Locale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
 import { allocate } from "@/lib/demo/allocate"
@@ -137,9 +139,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6" aria-labelledby="life-title">
-        <h2 id="life-title" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-          {h.lifecycle.title}
-        </h2>
+        <SectionHeading title={h.lifecycle.title} titleId="life-title" />
         <div className="mt-6 overflow-x-auto rounded-3xl border bg-card p-4 sm:p-8">
           <div className="min-w-[520px]">
             <LifecycleDiagram
@@ -165,10 +165,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
       <SectionDivider contained />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="rules-title">
-        <h2 id="rules-title" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-          {h.rules.title}
-        </h2>
-        <p className="mt-3 max-w-[68ch] text-muted-foreground">{h.rules.intro}</p>
+        <SectionHeading title={h.rules.title} titleId="rules-title" lead={h.rules.intro} />
         <div className="mt-8 grid gap-8 lg:grid-cols-3">
           {[
             { copy: h.rules.fixed, input: fixed },
@@ -190,9 +187,7 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
 
       <section className="border-y bg-secondary/50" aria-labelledby="safety-title">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-          <h2 id="safety-title" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-            {h.safety.title}
-          </h2>
+          <SectionHeading title={h.safety.title} titleId="safety-title" />
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border bg-card p-6">
               <ShieldCheckIcon className="size-7 text-primary" strokeWidth={1.75} aria-hidden="true" />
@@ -218,16 +213,9 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6" aria-labelledby="dev-title">
-        <h2 id="dev-title" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-          {h.dev.title}
-        </h2>
-        <p className="mt-3 max-w-[68ch] text-muted-foreground">{h.dev.body}</p>
-        <details className="group mt-6">
-          <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-bold text-primary-ink [&::-webkit-details-marker]:hidden">
-            <PlusIcon className="size-4 transition-transform duration-200 group-open:rotate-45" aria-hidden="true" />
-            {h.dev.show}
-          </summary>
-          <div className="mt-4 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <SectionHeading title={h.dev.title} titleId="dev-title" lead={h.dev.body} />
+        <Disclosure variant="pill" summary={h.dev.show} className="mt-6">
+          <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
             <div className="min-w-0">
               <h3 className="text-sm font-bold">{h.dev.interfaceTitle}</h3>
               <pre className="mt-3 overflow-x-auto rounded-2xl border bg-card p-4 font-mono text-xs leading-relaxed">
@@ -249,8 +237,8 @@ export default async function HowItWorksPage({ params }: PageProps<"/[locale]/ho
               </ul>
             </div>
           </div>
-        </details>
-        <a href={REPO_URL} className="mt-2 inline-flex min-h-11 items-center gap-1.5 font-bold text-primary-ink underline underline-offset-4">
+        </Disclosure>
+        <a href={REPO_URL} className="mt-4 inline-flex min-h-11 items-center gap-1.5 font-bold text-primary-ink underline underline-offset-4">
           {h.dev.repo}
           <ArrowRightIcon className="size-4" aria-hidden="true" />
         </a>

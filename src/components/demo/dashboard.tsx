@@ -6,6 +6,8 @@ import Link from "next/link"
 import { ShareBar } from "@/components/diagrams/share-bar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Empty, EmptyContent, EmptyTitle } from "@/components/ui/empty"
+import { Stat, StatGroup, StatLabel, StatValue } from "@/components/ui/stat"
 import { href } from "@/i18n/config"
 import { t } from "@/i18n/t"
 import { shareFraction } from "@/lib/demo/allocate"
@@ -50,14 +52,14 @@ export function Dashboard() {
       </div>
 
       <section aria-label={d.stats.usdNote}>
-        <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatGroup className="grid-cols-2">
           {stats.map((s) => (
-            <div key={s.label} className="rounded-2xl border bg-card p-4">
-              <dt className="text-xs font-semibold text-muted-foreground">{s.label}</dt>
-              <dd className={`mt-1 text-xl font-extrabold tabular-nums sm:text-2xl ${s.accent ? "text-primary-ink" : ""}`}>{s.value}</dd>
-            </div>
+            <Stat key={s.label} tone={s.accent ? "primary" : "default"}>
+              <StatLabel>{s.label}</StatLabel>
+              <StatValue>{s.value}</StatValue>
+            </Stat>
           ))}
-        </dl>
+        </StatGroup>
       </section>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -66,15 +68,17 @@ export function Dashboard() {
             {d.title}
           </h2>
           {splits.length === 0 ? (
-            <div className="flex flex-col items-center rounded-3xl border border-dashed p-10 text-center">
-              <p className="text-lg font-bold">{d.empty.title}</p>
-              <Button asChild className="mt-6">
-                <Link href={href(locale, "/app/new")}>
-                  <PlusIcon aria-hidden="true" />
-                  {d.empty.create}
-                </Link>
-              </Button>
-            </div>
+            <Empty size="lg">
+              <EmptyTitle>{d.empty.title}</EmptyTitle>
+              <EmptyContent>
+                <Button asChild>
+                  <Link href={href(locale, "/app/new")}>
+                    <PlusIcon aria-hidden="true" />
+                    {d.empty.create}
+                  </Link>
+                </Button>
+              </EmptyContent>
+            </Empty>
           ) : (
             <ul className="flex flex-col gap-3">
               {splits.map((s) => (

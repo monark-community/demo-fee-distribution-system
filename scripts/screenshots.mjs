@@ -101,7 +101,7 @@ async function appFlows(page, v) {
   await page.getByRole("button", { name: "Deploy split" }).click()
   await page.waitForTimeout(200)
   await shot(page, v, "flow2-composer-errors", true)
-  await page.getByRole("button", { name: "Hackathon prize" }).click()
+  await page.getByRole("radio", { name: "Hackathon prize" }).click()
   await page.getByLabel("Name", { exact: true }).fill("Spring hackathon prize")
   await shot(page, v, "flow2-composer-filled", true)
   // Fail once to show the failed deploy state
@@ -192,7 +192,7 @@ async function frenchFlow(page, v) {
   await page.evaluate(() => window.scrollTo(0, 0))
   await shot(page, v, "flow3-paid", true)
   await page.goto(`${BASE}/fr/app/new`, { waitUntil: "networkidle" })
-  await page.getByRole("button", { name: "Surplus de coop" }).click()
+  await page.getByRole("radio", { name: "Surplus de coop" }).click()
   await shot(page, v, "flow2-composer-filled", true)
 }
 
