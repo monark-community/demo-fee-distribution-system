@@ -22,7 +22,7 @@ Every transaction goes through a simulated wallet prompt, a pending state with a
 
 ## Run it locally
 
-Requirements: Node.js 22 and pnpm 10.
+Requirements: Node.js 24 and pnpm 10.
 
 ```bash
 pnpm install
