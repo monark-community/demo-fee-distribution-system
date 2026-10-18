@@ -33,7 +33,7 @@
     "eslint-config-next": "16.3.6",
     "playwright": "~1.59.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^6"
   },
   "packageManager": "pnpm@10.28.0",
   "description": "Splitflow by Monark: split every incoming payment among contributors (simulated testnet demo).",
